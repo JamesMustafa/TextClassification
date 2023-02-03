@@ -5,20 +5,23 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased-finetuned-sst-2-english")
 model = AutoModelForSequenceClassification.from_pretrained("distilbert-base-uncased-finetuned-sst-2-english")
 
-# Encode the input text
-input_text = "Hello, my dog is cute"
-inputs = tokenizer(input_text, return_tensors="pt")
+input_texts = ["Hello, my dog is cute", "I hate this movie", "This is the best day of my life"]
+sentiments = []
 
-# Generate the sentiment predictions
-with torch.no_grad():
-    outputs = model(**inputs)
-    prediction = outputs[0].argmax().item()
+for input_text in input_texts:
+    inputs = tokenizer(input_text, return_tensors="pt")
 
-# Map the prediction to a sentiment label
-if prediction == 0:
-    sentiment = "negative"
-else:
-    sentiment = "positive"
+    # Generate the sentiment predictions
+    with torch.no_grad():
+        outputs = model(**inputs)
+        prediction = outputs[0].argmax().item()
 
-# Print the sentiment
-print(f"The sentiment for '{input_text}' is: {sentiment}")
+    # Map the prediction to a sentiment label
+    if prediction == 0:
+        sentiment = "negative"
+    else:
+        sentiment = "positive"
+
+    sentiments.append(sentiment)
+
+print(sentiments)
